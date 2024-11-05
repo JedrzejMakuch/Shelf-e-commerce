@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ShelfWeb.Models;
 
 namespace ShelfWeb.Data
 {
@@ -8,5 +9,7 @@ namespace ShelfWeb.Data
         {
             
         }
+
+        public DbSet<Category> Categories { get; set; }
     }
 }
