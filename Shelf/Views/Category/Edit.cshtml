@@ -4,8 +4,8 @@
 <form method="post" class="col-10">
     <div class="border p-3 mt-4">
         <div class="row pb-2">
-            <h2 class="text-primary">Create Category</h2>
-            <hr/>
+            <h2 class="text-primary">Update Category</h2>
+            <hr />
         </div>
         @* <div asp-validation-summary="All" class="text-danger"></div> *@
         <div class="mb-3">
@@ -19,13 +19,13 @@
             <span asp-validation-for="DisplayOrder" class="text-danger"></span>
         </div>
         <div>
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary">Update</button>
             <a asp-controller="Category" asp-action="Index" class="btn btn-danger">Back to List</a>
         </div>
     </div>
 </form>
 
-@section Scripts{
+@section Scripts {
     @{
         <partial name="_ValidationScriptsPartial" />
     }
