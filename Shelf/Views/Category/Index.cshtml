@@ -1,5 +1,4 @@
 ﻿@using ShelfWeb.Models;
-
 @model List<Category>
 
 
@@ -9,7 +8,7 @@
             <h2 class="text-body">Category List</h2>
         </div>
         <div class="col text-end">
-            <a asp-action="" asp-action="" class="btn btn-primary">
+            <a asp-controller="Category" asp-action="Create" class="btn btn-primary">
                 <i class="bi bi-plus-square"></i> Create new Category
             </a>
         </div>
