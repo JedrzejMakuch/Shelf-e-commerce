@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shelf.Data.Data;
+using Shelf.Data.Repository.IRepository;
 using Shelf.Models.Models;
 
 namespace ShelfWeb.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        public CategoryController(ApplicationDbContext context)
+        private readonly ICategoryRepository _categoryRepository;
+        public CategoryController(ICategoryRepository categoryRepository)
         {
-            _context = context;
+            _categoryRepository = categoryRepository;
         }
 
         public IActionResult Index()
         {
-            List<Category> categoryList = _context.Categories.ToList();
+            List<Category> categoryList = _categoryRepository.GetAll().ToList();
                 
             return View(categoryList);
         }
@@ -34,8 +34,8 @@ namespace ShelfWeb.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Categories.Add(category);
-                _context.SaveChanges();
+                _categoryRepository.Add(category);
+                _categoryRepository.Save();
                 TempData["success"] = "Category created successfully";
                 return RedirectToAction("Index");
             }
@@ -50,9 +50,9 @@ namespace ShelfWeb.Controllers
                 return NotFound();
             }
 
-            Category category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            Category category = _categoryRepository.GetFirstOrDefault(x => x.Id == id);
 
-            if(category == null)
+            if (category == null)
             {
                 return NotFound();
             }
@@ -65,8 +65,8 @@ namespace ShelfWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Categories.Update(category);
-                _context.SaveChanges();
+                _categoryRepository.Update(category);
+                _categoryRepository.Save();
                 TempData["success"] = "Category edited successfully";
                 return RedirectToAction("Index");
             }
@@ -81,7 +81,7 @@ namespace ShelfWeb.Controllers
                 return NotFound();
             }
 
-            Category category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            Category category = _categoryRepository.GetFirstOrDefault(e => e.Id == id);
 
             if (category == null)
             {
@@ -94,14 +94,14 @@ namespace ShelfWeb.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Category category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            Category category = _categoryRepository.GetFirstOrDefault(e => e.Id == id);
             if (category == null)
             {
                 return NotFound();
             }
 
-            _context.Categories.Remove(category);
-            _context.SaveChanges();
+            _categoryRepository.Delete(category);
+            _categoryRepository.Save();
             TempData["success"] = "Category deleted successfully";
 
             return RedirectToAction("Index");
