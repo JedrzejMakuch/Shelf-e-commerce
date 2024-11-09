@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShelfWeb.Models;
+using Shelf.Models.Models;
 
-namespace ShelfWeb.Data
+namespace Shelf.Data.Data
 {
     public class ApplicationDbContext : DbContext
     {

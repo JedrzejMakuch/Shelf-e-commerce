@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace ShelfWeb.Migrations
+namespace Shelf.Data.Migrations
 {
     /// <inheritdoc />
     public partial class SeedCategoryTable : Migration

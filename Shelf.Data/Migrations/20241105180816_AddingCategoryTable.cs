@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ShelfWeb.Migrations
+namespace Shelf.Data.Migrations
 {
     /// <inheritdoc />
     public partial class AddingCategoryTable : Migration

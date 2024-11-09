@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShelfWeb.Data;
-using ShelfWeb.Models;
+using Shelf.Data.Data;
+using Shelf.Models.Models;
 
 namespace ShelfWeb.Controllers
 {
