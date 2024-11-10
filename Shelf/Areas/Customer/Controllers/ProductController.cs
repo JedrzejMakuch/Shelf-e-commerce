@@ -2,8 +2,9 @@
 using Shelf.Data.Repository.IRepository;
 using Shelf.Models.Models;
 
-namespace Shelf.Web.Controllers
+namespace Shelf.Web.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
