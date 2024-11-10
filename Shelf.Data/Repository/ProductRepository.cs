@@ -14,7 +14,7 @@ namespace Shelf.Data.Repository
 
         public void Update(Product product)
         {
-            _context.Update(product);
+            _context.Products.Update(product);
         }
     }
 }

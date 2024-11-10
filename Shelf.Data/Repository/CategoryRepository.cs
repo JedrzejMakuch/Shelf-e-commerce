@@ -14,7 +14,7 @@ namespace Shelf.Data.Repository
 
         public void Update(Category category)
         {
-            _context.Update(category);
+            _context.Categories.Update(category);
         }
     }
 }
