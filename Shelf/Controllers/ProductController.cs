@@ -2,22 +2,22 @@
 using Shelf.Data.Repository.IRepository;
 using Shelf.Models.Models;
 
-namespace Shelf.Web.Areas.Admin.Controllers
+namespace Shelf.Web.Controllers
 {
-    [Area("Admin")]
-    public class CategoryController : Controller
+    public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CategoryController(IUnitOfWork unitOfWork)
+
+        public ProductController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            List<Category> categoryList = _unitOfWork.CategoryRepository.GetAll().ToList();
+            List<Product> productList = _unitOfWork.ProductRepository.GetAll().ToList();
 
-            return View(categoryList);
+            return View(productList);
         }
 
         public IActionResult Create()
@@ -26,17 +26,17 @@ namespace Shelf.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Category category)
+        public IActionResult Create(Product product)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.CategoryRepository.Add(category);
+                _unitOfWork.ProductRepository.Add(product);
                 _unitOfWork.Save();
-                TempData["success"] = "Category created successfully";
+                TempData["success"] = "Product created successfully";
                 return RedirectToAction("Index");
             }
 
-            return View(category);
+            return View(product);
         }
 
         public IActionResult Edit(int id)
@@ -46,28 +46,28 @@ namespace Shelf.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            Category category = _unitOfWork.CategoryRepository.GetFirstOrDefault(x => x.Id == id);
+            Product product = _unitOfWork.ProductRepository.GetFirstOrDefault(x => x.Id == id);
 
-            if (category == null)
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(product);
         }
 
         [HttpPost]
-        public IActionResult Edit(Category category)
+        public IActionResult Edit(Product product)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.CategoryRepository.Update(category);
+                _unitOfWork.ProductRepository.Update(product);
                 _unitOfWork.Save();
-                TempData["success"] = "Category edited successfully";
+                TempData["success"] = "Product edited successfully";
                 return RedirectToAction("Index");
             }
 
-            return View(category);
+            return View(product);
         }
 
         public IActionResult Delete(int? id)
@@ -77,28 +77,28 @@ namespace Shelf.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            Category category = _unitOfWork.CategoryRepository.GetFirstOrDefault(e => e.Id == id);
+            Product product = _unitOfWork.ProductRepository.GetFirstOrDefault(e => e.Id == id);
 
-            if (category == null)
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(product);
         }
 
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Category category = _unitOfWork.CategoryRepository.GetFirstOrDefault(e => e.Id == id);
-            if (category == null)
+            Product product = _unitOfWork.ProductRepository.GetFirstOrDefault(e => e.Id == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.CategoryRepository.Delete(category);
+            _unitOfWork.ProductRepository.Delete(product);
             _unitOfWork.Save();
-            TempData["success"] = "Category deleted successfully";
+            TempData["success"] = "Product deleted successfully";
 
             return RedirectToAction("Index");
         }
