@@ -20,7 +20,7 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="Description"></label>
-                    <textarea asp-for="Description" class="form-control" />
+                    <textarea asp-for="Description" class="form-control"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
@@ -52,6 +52,12 @@
                     <label asp-for="Price100"></label>
                     <input asp-for="Price100" class="form-control" />
                     <span asp-validation-for="Price100" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <select asp-for="CategoryId" asp-items="@(ViewData["CategoryList"] as IEnumerable<SelectListItem>)" class="form-select form-control">
+                        <option disabled selected>Select Category</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary">Create</button>

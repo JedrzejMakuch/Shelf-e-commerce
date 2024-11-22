@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Shelf.Data.Repository.IRepository;
 using Shelf.Models.Models;
 
@@ -17,12 +18,23 @@ namespace Shelf.Web.Areas.Customer.Controllers
         public IActionResult Index()
         {
             List<Product> productList = _unitOfWork.ProductRepository.GetAll().ToList();
-
+            
             return View(productList);
         }
 
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.CategoryRepository
+                .GetAll()
+                .Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                });
+
+            //ViewBag.CategoryList = CategoryList;
+            ViewData["CategoryList"] = CategoryList;
+
             return View();
         }
 
