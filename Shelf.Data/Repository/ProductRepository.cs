@@ -14,7 +14,24 @@ namespace Shelf.Data.Repository
 
         public void Update(Product product)
         {
-            _context.Products.Update(product);
+            var productDb = _context.Products.FirstOrDefault(p => p.Id == product.Id);
+            if (productDb != null)
+            {
+                productDb.Title = product.Title;
+                productDb.Description = product.Description;
+                productDb.CategoryId = product.CategoryId;
+                productDb.Price = product.Price;
+                productDb.Price50 = product.Price50;
+                productDb.Price100 = product.Price100;
+                productDb.ISBN = product.ISBN;
+                productDb.Author = product.Author;
+                productDb.ListPrice = product.ListPrice;
+            
+                if(product.ImageUrl != null)
+                {
+                    productDb.ImageUrl = product.ImageUrl;
+                }
+            }
         }
     }
 }
