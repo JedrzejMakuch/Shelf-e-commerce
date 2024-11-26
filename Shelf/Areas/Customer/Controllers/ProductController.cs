@@ -23,7 +23,7 @@ namespace Shelf.Web.Areas.Customer.Controllers
             return View(productList);
         }
 
-        public IActionResult Create()
+        public IActionResult Upsert(int? id)
         {
             ProductViewModel productVM = new ProductViewModel
             {
@@ -37,11 +37,19 @@ namespace Shelf.Web.Areas.Customer.Controllers
                 Product = new Product()
             };
 
-            return View(productVM);
+            if(id == null || id == 0)
+            {
+                return View(productVM);
+            }
+            else
+            {
+                productVM.Product = _unitOfWork.ProductRepository.GetFirstOrDefault(c => c.Id == id);
+                return View(productVM);
+            }
         }
 
         [HttpPost]
-        public IActionResult Create(ProductViewModel product)
+        public IActionResult Upsert(ProductViewModel product, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -62,37 +70,6 @@ namespace Shelf.Web.Areas.Customer.Controllers
 
                 return View(product);
             }
-        }
-
-        public IActionResult Edit(int id)
-        {
-            if (id == 0 || id == null)
-            {
-                return NotFound();
-            }
-
-            Product product = _unitOfWork.ProductRepository.GetFirstOrDefault(x => x.Id == id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(Product product)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.ProductRepository.Update(product);
-                _unitOfWork.Save();
-                TempData["success"] = "Product edited successfully";
-                return RedirectToAction("Index");
-            }
-
-            return View(product);
         }
 
         public IActionResult Delete(int? id)
