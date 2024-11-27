@@ -4,9 +4,9 @@ using Shelf.Data.Repository.IRepository;
 using Shelf.Models.Models;
 using Shelf.Models.ViewModels;
 
-namespace Shelf.Web.Areas.Customer.Controllers
+namespace Shelf.Web.Areas.Admin.Controllers
 {
-    [Area("Customer")]
+    [Area("Admin")]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -21,7 +21,7 @@ namespace Shelf.Web.Areas.Customer.Controllers
         public IActionResult Index()
         {
             List<Product> productList = _unitOfWork.ProductRepository.GetAll("Category").ToList();
-            
+
             return View(productList);
         }
 
@@ -39,7 +39,7 @@ namespace Shelf.Web.Areas.Customer.Controllers
                 Product = new Product()
             };
 
-            if(id == null || id == 0)
+            if (id == null || id == 0)
             {
                 return View(productVM);
             }
@@ -61,12 +61,12 @@ namespace Shelf.Web.Areas.Customer.Controllers
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     string productPath = Path.Combine(wwwRootPath, @"images\product");
 
-                    if (!string.IsNullOrEmpty(productVM.Product.ImageUrl)) 
+                    if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
                     {
-                        var oldImagePath = 
+                        var oldImagePath =
                             Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
 
-                        if(System.IO.File.Exists(oldImagePath))
+                        if (System.IO.File.Exists(oldImagePath))
                         {
                             System.IO.File.Delete(oldImagePath);
                         }
@@ -80,11 +80,11 @@ namespace Shelf.Web.Areas.Customer.Controllers
                     productVM.Product.ImageUrl = @"\images\product\" + fileName;
                 }
 
-                if(productVM.Product.Id == 0)
+                if (productVM.Product.Id == 0)
                 {
                     _unitOfWork.ProductRepository.Add(productVM.Product);
                     TempData["success"] = "Product created successfully";
-                } 
+                }
                 else
                 {
                     _unitOfWork.ProductRepository.Update(productVM.Product);
@@ -93,9 +93,10 @@ namespace Shelf.Web.Areas.Customer.Controllers
 
                 _unitOfWork.Save();
                 return RedirectToAction("Index");
-            } else
+            }
+            else
             {
-        
+
                 productVM.CategoryList = _unitOfWork.CategoryRepository
                 .GetAll()
                 .Select(c => new SelectListItem
@@ -108,37 +109,39 @@ namespace Shelf.Web.Areas.Customer.Controllers
             }
         }
 
+        #region API CALLS
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Product> productList = _unitOfWork.ProductRepository.GetAll("Category").ToList();
+            return Json(new { data = productList });
+        }
+
+        [HttpDelete]
         public IActionResult Delete(int? id)
         {
-            if (id == 0 || id == null)
+            var productToDelete = _unitOfWork.ProductRepository.GetFirstOrDefault(p => p.Id == id);
+            if(productToDelete == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error while deleting." });
+            }
+            
+            var oldImagePath =
+                            Path.Combine(_webHostEnvironment.WebRootPath, 
+                            productToDelete.ImageUrl.TrimStart('\\'));
+
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
             }
 
-            Product product = _unitOfWork.ProductRepository.GetFirstOrDefault(e => e.Id == id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
-        {
-            Product product = _unitOfWork.ProductRepository.GetFirstOrDefault(e => e.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            _unitOfWork.ProductRepository.Delete(product);
+            _unitOfWork.ProductRepository.Delete(productToDelete);
             _unitOfWork.Save();
-            TempData["success"] = "Product deleted successfully";
 
-            return RedirectToAction("Index");
+            return Json(new { success = true, message = "Delete Successful" });
         }
+
+        #endregion
     }
 }
