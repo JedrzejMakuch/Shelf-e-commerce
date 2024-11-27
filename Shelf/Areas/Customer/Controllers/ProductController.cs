@@ -20,7 +20,7 @@ namespace Shelf.Web.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            List<Product> productList = _unitOfWork.ProductRepository.GetAll().ToList();
+            List<Product> productList = _unitOfWork.ProductRepository.GetAll("Category").ToList();
             
             return View(productList);
         }
