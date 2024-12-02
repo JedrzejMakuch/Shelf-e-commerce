@@ -41,7 +41,7 @@ namespace Shelf.Web.Areas.Admin.Controllers
 
         public IActionResult Edit(int id)
         {
-            if (id == 0 || id == null)
+            if (id == 0)
             {
                 return NotFound();
             }
