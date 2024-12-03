@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Shelf.Data\Shelf.Data.csproj" />
     <ProjectReference Include="..\Shelf.Models\Shelf.Models.csproj" />
+    <ProjectReference Include="..\Shelf.Utility\Shelf.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>
