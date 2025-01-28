@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shelf.Data.Repository.IRepository;
 using Shelf.Models.Models;
+using Shelf.Utility;
 
 namespace Shelf.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]  
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
