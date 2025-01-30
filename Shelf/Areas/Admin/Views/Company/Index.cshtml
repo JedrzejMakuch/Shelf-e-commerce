@@ -1,5 +1,4 @@
 ﻿@using Shelf.Models.Models
-@model List<Product>
 
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
@@ -8,8 +7,8 @@
             <h2 class="text-white py-2">Category List</h2>
             </div>
             <div class="text-end">
-                <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary">
-                    <i class="bi bi-plus-square"></i> Create new Product
+                <a asp-controller="Company" asp-action="Upsert" class="btn btn-primary">
+                    <i class="bi bi-plus-square"></i> Create new Company
                 </a>
             </div>
         </div>
@@ -18,11 +17,12 @@
         <table id="tblData" class="table table-bordered table-striped mt-3" width="100%">
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>ISBN</th>
-                    <th>Author</th>
-                    <th>Price</th>
-                    <th>Category</th>
+                    <th>Name</th>
+                    <th>StreetAddress</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>PostalCode</th>
+                    <th>PhoneNumber</th>
                     <th></th>
                 </tr>
             </thead>
@@ -31,5 +31,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/product.js"></script>
+    <script src="~/js/company.js"></script>
 }
