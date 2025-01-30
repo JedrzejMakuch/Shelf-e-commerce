@@ -172,6 +172,11 @@ namespace Shelf.Web.Areas.Identity.Pages.Account
                 user.City= Input.City;
                 user.PostalCode = Input.PostalCode;
 
+                if(Input.Role == SD.Role_Company)
+                {
+                    user.CompanyId = Input.CompanyId;
+                }
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
