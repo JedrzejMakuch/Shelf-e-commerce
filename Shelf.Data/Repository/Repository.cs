@@ -46,9 +46,17 @@ namespace Shelf.Data.Repository
             return query.ToList();
         }
 
-        public T GetFirstOrDefault(Expression<Func<T, bool>> filer, string? includeProperties = null)
+        public T GetFirstOrDefault(Expression<Func<T, bool>> filer, string? includeProperties = null, bool tracked = false)
         {
-            IQueryable<T> query = dbSet;
+            IQueryable<T> query;
+            if (!tracked)
+            {
+                query = dbSet.AsNoTracking();
+            } else
+            {
+                query = dbSet;
+            };
+
             query = query.Where(filer);
 
             if (!string.IsNullOrEmpty(includeProperties))
