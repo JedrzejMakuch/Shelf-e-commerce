@@ -31,9 +31,15 @@ namespace Shelf.Data.Repository
             dbSet.RemoveRange(entities);
         }
 
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+
+            if(filter != null)
+            {
+                query = query.Where(filter);
+            }
+            
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var property in includeProperties
@@ -46,7 +52,7 @@ namespace Shelf.Data.Repository
             return query.ToList();
         }
 
-        public T GetFirstOrDefault(Expression<Func<T, bool>> filer, string? includeProperties = null, bool tracked = false)
+        public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
         {
             IQueryable<T> query;
             if (!tracked)
@@ -57,7 +63,7 @@ namespace Shelf.Data.Repository
                 query = dbSet;
             };
 
-            query = query.Where(filer);
+            query = query.Where(filter);
 
             if (!string.IsNullOrEmpty(includeProperties))
             {
