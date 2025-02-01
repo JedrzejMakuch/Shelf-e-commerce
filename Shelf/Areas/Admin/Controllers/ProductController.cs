@@ -23,7 +23,7 @@ namespace Shelf.Web.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Product> productList = _unitOfWork.ProductRepository.GetAll("Category").ToList();
+            List<Product> productList = _unitOfWork.ProductRepository.GetAll(null, "Category").ToList();
 
             return View(productList);
         }
@@ -117,7 +117,7 @@ namespace Shelf.Web.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<Product> productList = _unitOfWork.ProductRepository.GetAll("Category").ToList();
+            List<Product> productList = _unitOfWork.ProductRepository.GetAll(null, "Category").ToList();
             return Json(new { data = productList });
         }
 
