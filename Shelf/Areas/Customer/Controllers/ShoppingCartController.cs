@@ -37,6 +37,11 @@ namespace Shelf.Web.Areas.Customer.Controllers
             return View(ShoppingCartVM);
         }
 
+        public IActionResult Summary()
+        {
+            return View();
+        }
+
         public IActionResult Plus(int shoppingCartId)
         {
             var shoppingCartDb = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault(c => c.Id == shoppingCartId);
