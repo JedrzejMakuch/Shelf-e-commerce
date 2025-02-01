@@ -37,6 +37,47 @@ namespace Shelf.Web.Areas.Customer.Controllers
             return View(ShoppingCartVM);
         }
 
+        public IActionResult Plus(int shoppingCartId)
+        {
+            var shoppingCartDb = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault(c => c.Id == shoppingCartId);
+            shoppingCartDb.Count += 1;
+            _unitOfWork.ShoppingCartRepository.Update(shoppingCartDb);
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Minus(int shoppingCartId)
+        {
+            var shoppingCartDb = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault(c => c.Id == shoppingCartId);
+           
+            if(shoppingCartDb.Count <= 1) 
+            {
+                _unitOfWork.ShoppingCartRepository.Delete(shoppingCartDb);
+            } else
+            {
+                shoppingCartDb.Count -= 1;
+                _unitOfWork.ShoppingCartRepository.Update(shoppingCartDb);
+            }
+            
+            _unitOfWork.Save();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Remove(int shoppingCartId)
+        {
+            var shoppingCartDb = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault(c => c.Id == shoppingCartId);
+
+            if (shoppingCartDb == null)
+            {
+                return BadRequest();
+            }
+
+            _unitOfWork.ShoppingCartRepository.Delete(shoppingCartDb);
+            _unitOfWork.Save();
+            return RedirectToAction(nameof(Index));
+        }
+
         private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
         {
             if(shoppingCart.Count <= 50)
