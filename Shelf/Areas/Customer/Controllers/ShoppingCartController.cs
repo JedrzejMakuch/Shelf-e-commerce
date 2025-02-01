@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shelf.Data.Repository.IRepository;
+using Shelf.Models.Models;
 using Shelf.Models.ViewModels;
 using System.Security.Claims;
 
@@ -27,7 +28,28 @@ namespace Shelf.Web.Areas.Customer.Controllers
                 ShoppingCartList = _unitOfWork.ShoppingCartRepository.GetAll(s => s.ApplicationUserId == userId, includeProperties: "Product")
             };
 
-            return View();
+            foreach(var cart in ShoppingCartVM.ShoppingCartList)
+            {
+                cart.Price = GetPriceBasedOnQuantity(cart);
+                ShoppingCartVM.OrderTotal += (cart.Price * cart.Count);
+            }
+
+            return View(ShoppingCartVM);
+        }
+
+        private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
+        {
+            if(shoppingCart.Count <= 50)
+            {
+                return shoppingCart.Product.Price;
+            }
+            else if(shoppingCart.Count <= 100)
+            {
+                return shoppingCart.Product.Price50;
+            } else
+            {
+                return shoppingCart.Product.Price100;
+            }
         }
     }
 }
