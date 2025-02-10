@@ -79,7 +79,8 @@ namespace Shelf.Web.Areas.Customer.Controllers
             ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCartRepository.GetAll(s => s.ApplicationUserId == userId, includeProperties: "Product");
             ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
             ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
-			ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(u => u.Id == userId);
+
+			ApplicationUser applicationUser = _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(u => u.Id == userId);
 
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
@@ -87,7 +88,7 @@ namespace Shelf.Web.Areas.Customer.Controllers
 				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
 			}
 
-            if(ShoppingCartVM.OrderHeader.ApplicationUser.CompanyId.GetValueOrDefault() == 0)
+            if(applicationUser.CompanyId.GetValueOrDefault() == 0)
             {
                 ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
                 ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
@@ -114,9 +115,19 @@ namespace Shelf.Web.Areas.Customer.Controllers
                 _unitOfWork.Save();
             }
 
+			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+			{
+				// stripe logic
+			}
 
-			return View(ShoppingCartVM);
+			return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
 		}
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            return View(id);
+        }
+
 
 		public IActionResult Plus(int shoppingCartId)
         {
