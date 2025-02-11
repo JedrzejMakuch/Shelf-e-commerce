@@ -5,6 +5,7 @@ using Shelf.Models.Models;
 
 namespace Shelf.Web.Areas.Admin.Controllers
 {
+	[Area("Admin")]
 	public class OrderController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
