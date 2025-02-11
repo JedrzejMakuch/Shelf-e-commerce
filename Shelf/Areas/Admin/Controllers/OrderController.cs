@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shelf.Data.Repository.IRepository;
 using Shelf.Models.Models;
+using Shelf.Utility;
 
 namespace Shelf.Web.Areas.Admin.Controllers
 {
-	[Area("Admin")]
+    [Area("Admin")]
 	public class OrderController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
@@ -23,10 +23,29 @@ namespace Shelf.Web.Areas.Admin.Controllers
 		#region API CALLS
 
 		[HttpGet]
-		public IActionResult GetAll()
+		public IActionResult GetAll(string status)
 		{
-			List<OrderHeader> orderList = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser").ToList();
-			return Json(new { data = orderList });
+			IEnumerable<OrderHeader> orderList = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser").ToList();
+
+            switch (status)
+            {
+                case "pending":
+                    orderList = orderList.Where(u => u.PaymentStatus == SD.PaymentStatusDelayedPayment);
+                    break;
+                case "inprocess":
+                    orderList = orderList.Where(u => u.OrderStatus == SD.StatusPending);
+                    break;
+                case "completed":
+                    orderList = orderList.Where(u => u.OrderStatus == SD.StatusShipped);
+                    break;
+                case "approved":
+                    orderList = orderList.Where(u => u.OrderStatus == SD.StatusApproved);
+                    break;
+                default:
+                    break;
+            }
+
+            return Json(new { data = orderList });
 		}
 
 		#endregion
