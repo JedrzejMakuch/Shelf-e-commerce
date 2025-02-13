@@ -5,6 +5,7 @@
 }
 
 <form method="post">
+    <input asp-for="OrderHeader.Id" hidden />
     <br />
     <div class="container">
         <div class="card">
@@ -60,12 +61,12 @@
                                 <div class="col-9">
                                     @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
                                     {
-                                        <input asp-for="OrderHeader.ApplicationUser.StreetAddress" type="text" class="form-control" />
-                                        <span asp-validation-for="OrderHeader.ApplicationUser.StreetAddress" class="text-danger"></span>
+                                        <input asp-for="OrderHeader.StreetAddress" type="text" class="form-control" />
+                                        <span asp-validation-for="OrderHeader.StreetAddress" class="text-danger"></span>
                                     }
                                     else
                                     {
-                                        <input asp-for="OrderHeader.ApplicationUser.StreetAddress" type="text" readonly class="form-control" />
+                                        <input asp-for="OrderHeader.StreetAddress" type="text" readonly class="form-control" />
                                     }
                                 </div>
                             </div>
@@ -220,7 +221,7 @@
                             </div>
                             @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
                             {
-                               <input type="submit" class="btn btn-warning form-control my-1" value="Update Order Details" />
+                                <button type="submit" asp-action="UpdateOrderDetail" class="btn btn-warning form-control my-1">Update Order Details</button>
                             }
                         </div>
                         <div class="col-12 col-lg-5 offset-lg-1">
