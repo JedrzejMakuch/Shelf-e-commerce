@@ -4,6 +4,7 @@ using Shelf.Data.Repository.IRepository;
 using Shelf.Models.Models;
 using Shelf.Models.ViewModels;
 using Shelf.Utility;
+using System.Security.Claims;
 
 namespace Shelf.Web.Areas.Admin.Controllers
 {
@@ -71,7 +72,19 @@ namespace Shelf.Web.Areas.Admin.Controllers
         [HttpGet]
 		public IActionResult GetAll(string status)
 		{
-			IEnumerable<OrderHeader> orderList = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser").ToList();
+            IEnumerable<OrderHeader> orderList; 
+
+            if(User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+            {
+                orderList = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser").ToList();
+            }
+            else
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                orderList = _unitOfWork.OrderHeaderRepository.GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser");
+            }
 
             switch (status)
             {
