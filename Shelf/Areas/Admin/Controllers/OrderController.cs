@@ -9,6 +9,7 @@ using System.Security.Claims;
 namespace Shelf.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
 	public class OrderController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
@@ -65,6 +66,41 @@ namespace Shelf.Web.Areas.Admin.Controllers
             TempData["success"] = "Order Details updated successfully";
 
             return RedirectToAction(nameof(Details), new {orderId = orderHeaderFromDb.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
+        public IActionResult StartProcessing()
+        {
+            _unitOfWork.OrderHeaderRepository.UpdateStatus(orderViewModel.OrderHeader.Id, SD.StatusInProcess);
+            _unitOfWork.Save();
+
+            TempData["success"] = "Order Details updated successfully";
+
+            return RedirectToAction(nameof(Details), new { orderId = orderViewModel.OrderHeader.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
+        public IActionResult ShipOrder()
+        {
+            var orderHeaderFromDb = _unitOfWork.OrderHeaderRepository.GetFirstOrDefault(e => e.Id == orderViewModel.OrderHeader.Id);
+            orderHeaderFromDb.TrackingNumber = orderViewModel.OrderHeader.TrackingNumber;
+            orderHeaderFromDb.Carrier = orderViewModel.OrderHeader.Carrier;
+            orderHeaderFromDb.OrderStatus = orderViewModel.OrderHeader.OrderStatus;
+            orderHeaderFromDb.ShippingDate = DateTime.Now;
+
+            if(orderHeaderFromDb.PaymentStatus == SD.PaymentStatusDelayedPayment) {
+                orderHeaderFromDb.PaymentDueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30));
+            }
+
+            _unitOfWork.OrderHeaderRepository.Update(orderHeaderFromDb);
+            _unitOfWork.OrderHeaderRepository.UpdateStatus(orderViewModel.OrderHeader.Id, SD.StatusShipped);
+            _unitOfWork.Save();
+
+            TempData["success"] = "Order Shipped Successfully";
+
+            return RedirectToAction(nameof(Details), new { orderId = orderViewModel.OrderHeader.Id });
         }
 
         #region API CALLS
