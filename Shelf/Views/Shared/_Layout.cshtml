@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -28,9 +31,20 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">Manage Order</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index"><i class="bi bi-cart"></i> &nbsp;</a>
-                        </li>
+
+                        @if(HttpContextAccessor.HttpContext.Session.GetInt32(SD.SessionCart) != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index"><i class="bi bi-cart"></i> &nbsp; (@HttpContextAccessor.HttpContext.Session.GetInt32(SD.SessionCart))</a>
+                            </li>
+                        } 
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index"><i class="bi bi-cart"></i> &nbsp; (0)</a>
+                            </li>
+                        }
+                        
                         @if(User.IsInRole(SD.Role_Admin))
                         {
                             <li class="nav-item dropdown">

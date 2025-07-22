@@ -198,10 +198,11 @@ namespace Shelf.Web.Areas.Customer.Controllers
 
         public IActionResult Minus(int shoppingCartId)
         {
-            var shoppingCartDb = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault(c => c.Id == shoppingCartId);
+            var shoppingCartDb = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault(c => c.Id == shoppingCartId, tracked: true);
            
             if(shoppingCartDb.Count <= 1) 
             {
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == shoppingCartDb.ApplicationUserId).Count() - 1);
                 _unitOfWork.ShoppingCartRepository.Delete(shoppingCartDb);
             } else
             {
@@ -215,13 +216,14 @@ namespace Shelf.Web.Areas.Customer.Controllers
 
         public IActionResult Remove(int shoppingCartId)
         {
-            var shoppingCartDb = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault(c => c.Id == shoppingCartId);
+            var shoppingCartDb = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault(c => c.Id == shoppingCartId, tracked: true);
 
             if (shoppingCartDb == null)
             {
                 return BadRequest();
             }
 
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == shoppingCartDb.ApplicationUserId).Count() - 1);
             _unitOfWork.ShoppingCartRepository.Delete(shoppingCartDb);
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));

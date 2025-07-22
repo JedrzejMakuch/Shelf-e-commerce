@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shelf.Data.Repository.IRepository;
 using Shelf.Models.Models;
+using Shelf.Utility;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -21,6 +23,14 @@ namespace Shelf.Web.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+
+            if(claimsIdentity.IsAuthenticated)
+            {
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == userId).Count());
+            }
+
             List<Product> products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").ToList();
 
             return View(products);
@@ -51,13 +61,15 @@ namespace Shelf.Web.Areas.Customer.Controllers
             {
                 shoppingCartDb.Count += shoppingCart.Count;
                 _unitOfWork.ShoppingCartRepository.Update(shoppingCartDb);
+                _unitOfWork.Save();
             } else
             {
                 shoppingCart.Id = 0;
                 _unitOfWork.ShoppingCartRepository.Add(shoppingCart);
+                _unitOfWork.Save();
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == userId).Count());
             }
 
-            _unitOfWork.Save();
             TempData["success"] = "Shopping Cart created successfully";
             return RedirectToAction("Index");
         }
