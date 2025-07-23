@@ -176,6 +176,8 @@ namespace Shelf.Web.Areas.Customer.Controllers
 					_unitOfWork.OrderHeaderRepository.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
                     _unitOfWork.Save();
 				}
+
+                HttpContext.Session.Clear();
             }
 
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
